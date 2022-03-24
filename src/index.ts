@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import authRoute from "./routes/authRoutes";
+import route from "./routes/routes";
 import mongoose from "mongoose";
 
 const main = async () => {
@@ -31,6 +32,7 @@ const main = async () => {
   });
 
   app.use(authRoute);
+  app.use(route)
 
   app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);

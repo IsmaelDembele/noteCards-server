@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from "express";
 import "dotenv/config";
 import jwt, { Jwt } from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { UserModel, IUser } from "../db/userSchema";
+import { UserModel, IUser } from "../db/schemas/userSchema";
 
 // console.log(process.env.JWT_SECRET, "my secret");
 
@@ -30,7 +30,6 @@ export const postSignIn = async (req: Request, res: Response) => {
 
     const hash = user?.password as string;
     const verify = await bcrypt.compare(password, hash);
-    console.log(verify);
     if (!verify) {
       let msg = "error password";
       console.log(msg);
@@ -39,12 +38,18 @@ export const postSignIn = async (req: Request, res: Response) => {
       console.log(user);
 
       const token = jwt.sign(
-        { email: user?.email, fisrtname: user?.firstname },
+        { email: user?.email, fisrtname: user?.firstname, lastname: user?.lastname },
         process.env.JWT_SECRET as string,
-        { expiresIn: 60 * 60 }//1h
+        { expiresIn: 60 * 60 * 24 } //1d
       );
 
-      res.send({ token: token, msg: "ok", email });
+      res.send({
+        token: token,
+        msg: "ok",
+        email,
+        firstname: user?.firstname,
+        lastname: user?.lastname,
+      });
     }
   } catch (error) {
     console.log("sign in error ", error);
