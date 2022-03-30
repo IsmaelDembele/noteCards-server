@@ -4,8 +4,6 @@ import jwt, { Jwt } from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { UserModel, IUser } from "../db/schemas/userSchema";
 
-// console.log(process.env.JWT_SECRET, "my secret");
-
 export const getIsLogged = (req: Request, res: Response, next: NextFunction) => {
   const { token, email } = req.query;
 
@@ -23,8 +21,6 @@ export const postSignIn = async (req: Request, res: Response) => {
     logginInfo: { email, password },
   } = req.body;
 
-  console.log(email, password);
-
   try {
     const user = await UserModel.findOne<IUser>({ email: email }).exec();
 
@@ -35,8 +31,6 @@ export const postSignIn = async (req: Request, res: Response) => {
       console.log(msg);
       res.send(msg);
     } else {
-      console.log(user);
-
       const token = jwt.sign(
         { email: user?.email, fisrtname: user?.firstname, lastname: user?.lastname },
         process.env.JWT_SECRET as string,
@@ -55,8 +49,6 @@ export const postSignIn = async (req: Request, res: Response) => {
     console.log("sign in error ", error);
     res.send("error");
   }
-
-  // res.send("ok1");
 };
 
 export const postCreateAccount = async (req: Request, res: Response) => {
@@ -66,25 +58,18 @@ export const postCreateAccount = async (req: Request, res: Response) => {
 
   let hash: string;
 
-  console.log(firstname, lastname, email, password, passwordConfirm);
-
   try {
     hash = await bcrypt.hash(password, 12);
     UserModel.insertMany([{ firstname, lastname, email, password: hash }], {}, (err, data) => {
       if (err) {
         console.log("error insert user in the db  error ", err);
         res.send("error");
+      } else {
+        console.log("new  account created");
+        res.send("ok");
       }
-
-      console.log("new  account created");
-      console.log(data);
-      console.log("   ---   ");
-
-      res.send("ok");
     });
   } catch (error) {
     res.send(error);
   }
-
-  // res.send("ok");
 };
