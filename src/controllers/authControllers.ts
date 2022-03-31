@@ -4,15 +4,23 @@ import jwt, { Jwt } from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { UserModel, IUser } from "../db/schemas/userSchema";
 
+// interface IToken {
+//   email: string;
+//   fisrtname: string;
+//   lastname: string;
+// }
+
 export const getIsLogged = (req: Request, res: Response, next: NextFunction) => {
-  const { token, email } = req.query;
+  const { token } = req.query;
 
   try {
-    const decoded = jwt.verify(token as string, process.env.JWT_SECRET as string) as jwt.JwtPayload;
-    res.send(email === decoded?.email); //send true
+    const decoded = <jwt.JwtPayload>jwt.verify(token as string, process.env.JWT_SECRET as string);
+    // console.log(decoded);
+
+    res.send({ email: decoded.email, firstname: decoded.firstname, lastname: decoded.lastname }); //send true
   } catch (error) {
-    console.log("my error ", error);
-    res.send(false);
+    console.log("my error", error);
+    res.send(null);
   }
 };
 
@@ -23,7 +31,6 @@ export const postSignIn = async (req: Request, res: Response) => {
 
   try {
     const user = await UserModel.findOne<IUser>({ email: email }).exec();
-
     const hash = user?.password as string;
     const verify = await bcrypt.compare(password, hash);
     if (!verify) {
@@ -32,7 +39,7 @@ export const postSignIn = async (req: Request, res: Response) => {
       res.send(msg);
     } else {
       const token = jwt.sign(
-        { email: user?.email, fisrtname: user?.firstname, lastname: user?.lastname },
+        { email: user?.email, firstname: user?.firstname, lastname: user?.lastname },
         process.env.JWT_SECRET as string,
         { expiresIn: 60 * 60 * 24 } //1d
       );
