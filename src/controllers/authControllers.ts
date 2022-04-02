@@ -1,8 +1,9 @@
-import { NextFunction, Request, Response, Router } from "express";
+import {  Request, Response } from "express";
 import "dotenv/config";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { UserModel, IUser } from "../db/schemas/userSchema";
+import { errorLineSeparator } from "./constantes";
 
 export interface IToken {
   userID: string;
@@ -11,22 +12,9 @@ export interface IToken {
   lastname: string;
 }
 
-export const verifyJwtToken = async (token: string) => {
+export const getIsLogged = (req: any, res: Response) => {
   try {
-    const decoded = <jwt.JwtPayload>jwt.verify(token as string, process.env.JWT_SECRET as string);
-    return decoded;
-  } catch (error) {
-    console.log("error");
-    return new Error(error as any);
-  }
-};
-
-export const getIsLogged = (req: Request, res: Response) => {
-  const { token } = req.query;
-
-  try {
-    const decoded = <jwt.JwtPayload>jwt.verify(token as string, process.env.JWT_SECRET as string);
-    res.send({ email: decoded.email, firstname: decoded.firstname, lastname: decoded.lastname }); //send true
+    res.send({ email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname }); //send true
   } catch (error) {
     console.log("my error", error);
     res.send(null);
@@ -40,9 +28,6 @@ export const postSignIn = async (req: Request, res: Response) => {
 
   try {
     const user = await UserModel.findOne<IUser>({ email: email }).exec();
-
-    console.log(user);
-
     const hash = user?.password as string;
     const verify = await bcrypt.compare(password, hash);
     if (!verify) {
@@ -70,7 +55,7 @@ export const postSignIn = async (req: Request, res: Response) => {
       });
     }
   } catch (error) {
-    console.log("sign in error ", error);
+    console.log(errorLineSeparator, "postSignin :", error);
     res.send("error");
   }
 };
@@ -94,6 +79,7 @@ export const postCreateAccount = async (req: Request, res: Response) => {
       }
     });
   } catch (error) {
-    res.send(error);
+    console.log(errorLineSeparator, "postCreateAccount :", error);
+    res.send("error");
   }
 };

@@ -1,19 +1,14 @@
 import { Router } from "express";
 import { getIsLogged, postCreateAccount, postSignIn } from "../controllers/authControllers";
-
-const pathRoutes = {
-  IS_LOGGED: "/islogged",
-  SIGN_IN: "/signin",
-  CREATE_ACCOUNT: "/createAccount",
-};
+import { pathAuthRoutes } from "../controllers/constantes";
+import { decodeToken } from "../controllers/middleware";
 
 const authRoute = Router();
 
-//middeware quandidate
-authRoute.get(pathRoutes.IS_LOGGED, getIsLogged);
+authRoute.get(pathAuthRoutes.IS_LOGGED, decodeToken, getIsLogged);
 
-authRoute.post(pathRoutes.SIGN_IN, postSignIn);
+authRoute.post(pathAuthRoutes.SIGN_IN, postSignIn);
 
-authRoute.post(pathRoutes.CREATE_ACCOUNT, postCreateAccount);
+authRoute.post(pathAuthRoutes.CREATE_ACCOUNT, postCreateAccount);
 
 export default authRoute;

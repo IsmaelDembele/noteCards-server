@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 import jwt from "jsonwebtoken";
-import { networkInterfaces } from "os";
+import { errorLineSeparator } from "./constantes";
 
 //middleware
 export const decodeToken = (req: any, res: Response, next: NextFunction) => {
@@ -13,7 +13,8 @@ export const decodeToken = (req: any, res: Response, next: NextFunction) => {
     req.user = decoded;
     next();
   } catch (error) {
-    console.log("--------------------my error token", error);
+    console.log(errorLineSeparator, "decodeToken :", error);
+
     res.send(null);
   }
 };

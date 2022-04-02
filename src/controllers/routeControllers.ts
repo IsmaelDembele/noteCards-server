@@ -1,10 +1,8 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { cardsModel } from "../db/schemas/cards";
 import { subTopicsModel } from "../db/schemas/subTopics";
 import { topicsModel } from "../db/schemas/topicsSchema";
-import { IToken, verifyJwtToken } from "./authControllers";
-
-const errorLineSeparator = "####################################\n";
+import { errorLineSeparator } from "./constantes";
 
 export const getTopic = async (req: any, res: Response) => {
   try {
@@ -23,7 +21,7 @@ export const postTopic = async (req: any, res: Response) => {
     await topicsModel.insertMany([{ name: topic, userID: req.user.userID }]);
     res.send("ok");
   } catch (error) {
-    console.log(errorLineSeparator, "postTipic :", error);
+    console.log(errorLineSeparator, "postTopic :", error);
     res.send("error");
   }
 };
@@ -31,7 +29,7 @@ export const postTopic = async (req: any, res: Response) => {
 export const postSubTopic = async (req: any, res: Response) => {
   const { subtopic, topic } = req.body;
   try {
-    const topicdata = await topicsModel.findOne({ name: topic });
+    const topicdata = await topicsModel.findOne({ name: topic, userID: req.user.userID });
     if (topicdata?._id) {
       await subTopicsModel.insertMany([
         { name: subtopic, topicID: topicdata?._id, userID: req.user.userID },
@@ -92,7 +90,7 @@ export const addCard = async (req: any, res: Response) => {
       {},
       (error, doc) => {
         if (error) {
-          console.error("error while inserting cards", error);
+          console.error("error while inserting cards\n", error);
         } else {
           res.send("ok");
         }
