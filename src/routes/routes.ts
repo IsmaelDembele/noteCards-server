@@ -1,6 +1,8 @@
 import { Router, Request, Response } from "express";
+import { decodeToken } from "../controllers/middleware";
 import {
-  addCards,
+  addCard,
+  getCard,
   getCards,
   getSubTopic,
   getTopic,
@@ -20,18 +22,21 @@ const pathRoutes = {
   GET_SUB_TOPIC: "/getSubTopic",
   GET_CARDS: "/getCards",
   ADD_CARDS: "/addCards",
+  GET_CARD: "/getCard",
 };
 
-route.post(pathRoutes.POST_TOPIC, postTopic);
+route.get(pathRoutes.GET_TOPIC, decodeToken, getTopic);
 
-route.get(pathRoutes.GET_TOPIC, getTopic);
+route.post(pathRoutes.POST_TOPIC, decodeToken, postTopic);
 
-route.post(pathRoutes.POST_SUB_TOPIC, postSubTopic);
+route.post(pathRoutes.POST_SUB_TOPIC, decodeToken, postSubTopic);
 
-route.get(pathRoutes.GET_SUB_TOPIC, getSubTopic);
+route.get(pathRoutes.GET_SUB_TOPIC, decodeToken, getSubTopic);
 
-route.get(pathRoutes.GET_CARDS, getCards);
+route.get(pathRoutes.GET_CARDS, decodeToken, getCards);
 
-route.post(pathRoutes.ADD_CARDS, addCards);
+route.post(pathRoutes.ADD_CARDS, decodeToken, addCard);
+
+route.get(pathRoutes.GET_CARD, decodeToken, getCard);
 
 export default route;
