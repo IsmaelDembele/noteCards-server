@@ -9,8 +9,8 @@ interface ICards {
   topic: string;
   subTopic: string;
   userID: Types.ObjectId;
-  subTopicsID: Types.ObjectId;
-  topicsID: Types.ObjectId;
+  // subTopicsID: Types.ObjectId;
+  // topicsID: Types.ObjectId;
 }
 
 const cardsSchema = new Schema<ICards>({
@@ -19,8 +19,8 @@ const cardsSchema = new Schema<ICards>({
   note: String,
   topic: String,
   subTopic: String,
-  topicsID: { type: Schema.Types.ObjectId, ref: "Topic" },
-  subTopicsID: { type: Schema.Types.ObjectId, ref: "SubTopic" },
+  // topicsID: { type: Schema.Types.ObjectId, ref: "Topic" },
+  // subTopicsID: { type: Schema.Types.ObjectId, ref: "SubTopic" },
   userID: { type: Schema.Types.ObjectId, ref: "User", required: true },
 });
 

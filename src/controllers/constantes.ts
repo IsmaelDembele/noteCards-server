@@ -17,4 +17,5 @@ export const pathRoutes = {
   GET_CARDS: "/getCards",
   ADD_CARDS: "/addCards",
   GET_CARD: "/getCard",
+  UPDATE_CARD: "/updateCard",
 };

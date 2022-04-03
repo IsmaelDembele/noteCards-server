@@ -9,6 +9,7 @@ import {
   getTopic,
   postSubTopic,
   postTopic,
+  postUpdateCard,
 } from "../controllers/routeControllers";
 
 const route = Router();
@@ -28,5 +29,7 @@ route.get(pathRoutes.GET_CARDS, getCards);
 route.post(pathRoutes.ADD_CARDS, addCard);
 
 route.get(pathRoutes.GET_CARD, getCard);
+
+route.post(pathRoutes.UPDATE_CARD, postUpdateCard);
 
 export default route;

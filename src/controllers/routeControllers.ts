@@ -104,12 +104,32 @@ export const addCard = async (req: any, res: Response) => {
 };
 
 export const getCard = async (req: any, res: Response) => {
-  const { cardid } = req.query;
+  const { topic, subTopic } = req.query;
+  const { userID } = req.user;
+
+  // console.log(topic, subTopic, userID);
+
   try {
-    const card = await cardsModel.findOne({ _id: cardid, userID: req.user.userID });
+    const card = await cardsModel.find({ topic, subTopic, userID });
+    console.log(card);
+
     res.send(card);
+    // res.send("card");
   } catch (error) {
     console.log(errorLineSeparator, "getCard", error);
+    res.send("error");
+  }
+};
+
+export const postUpdateCard = async (req: any, res: Response) => {
+  const { topic, subTopic, front, back, note, cardID } = req.body;
+  const { userID } = req.user;
+
+  try {
+    const result = await cardsModel.findByIdAndUpdate({ _id: cardID }, { front, back, note });
+    res.send("ok");
+  } catch (error) {
+    console.log(errorLineSeparator, "postUpdateCard", error);
     res.send("error");
   }
 };
