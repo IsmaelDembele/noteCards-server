@@ -7,6 +7,10 @@ import {
   getCards,
   getSubTopic,
   getTopic,
+  postDeleteCard,
+  postDeleteCards,
+  postDeleteSubTopics,
+  postDeleteTopics,
   postSubTopic,
   postTopic,
   postUpdateCard,
@@ -31,5 +35,13 @@ route.post(pathRoutes.ADD_CARDS, addCard);
 route.get(pathRoutes.GET_CARD, getCard);
 
 route.post(pathRoutes.UPDATE_CARD, postUpdateCard);
+
+route.post(pathRoutes.DELETE_CARD, postDeleteCard);
+
+route.post(pathRoutes.DELETE_TOPICS, postDeleteTopics);
+
+route.post(pathRoutes.DELETE_SUB_TOPICS, postDeleteSubTopics);
+
+route.post(pathRoutes.DELETE_CARDS, postDeleteCards);
 
 export default route;

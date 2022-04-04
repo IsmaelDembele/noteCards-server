@@ -18,4 +18,8 @@ export const pathRoutes = {
   ADD_CARDS: "/addCards",
   GET_CARD: "/getCard",
   UPDATE_CARD: "/updateCard",
+  DELETE_CARD: "/deleteCard",
+  DELETE_TOPICS: "/deleteTopics",
+  DELETE_SUB_TOPICS: "/deleteSubTopics",
+  DELETE_CARDS: "/deleteCards",
 };

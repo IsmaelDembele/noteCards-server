@@ -4,13 +4,15 @@ import { topicsModel } from "./topicsSchema";
 export interface ISubTopics {
   _id?: string;
   name: string;
-  topicID: Types.ObjectId;
+  topic: string;
+  // topicID: Types.ObjectId;
   userID: Types.ObjectId;
 }
 
 const subTopicsSchema = new Schema<ISubTopics>({
-  name: { type: String, required: true },
-  topicID: { type: Schema.Types.ObjectId, ref: "Topic", required: true },
+  name: { type: String, required: true, unique: true },
+  topic: { type: String, required: true },
+  // topicID: { type: Schema.Types.ObjectId, ref: "Topic" },
   userID: { type: Schema.Types.ObjectId, ref: "User", required: true },
 });
 

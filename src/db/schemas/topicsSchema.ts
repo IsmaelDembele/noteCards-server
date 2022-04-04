@@ -7,7 +7,7 @@ export interface ITopics {
 }
 
 const topicsSchema = new Schema<ITopics>({
-  name: { type: String, required: true },
+  name: { type: String, required: true, unique: true },
   userID: { type: Schema.Types.ObjectId, ref: "User", required: true },
 });
 
