@@ -9,9 +9,11 @@ import {
   getTopic,
   postDeleteCard,
   postDeleteCards,
+  postDeleteSubTopic,
   postDeleteSubTopics,
   postDeleteTopic,
   postDeleteTopics,
+  postRenameSubTopic,
   postRenameTopic,
   postSubTopic,
   postTopic,
@@ -50,5 +52,9 @@ route.post(pathRoutes.DELETE_CARDS, getTopicAndSubTopicID, postDeleteCards);
 route.post(pathRoutes.DELETE_TOPIC, getTopicID, postDeleteTopic);
 
 route.post(pathRoutes.RENAME_TOPIC, getTopicID, postRenameTopic);
+
+route.post(pathRoutes.DELETE_SUB_TOPIC, getTopicAndSubTopicID, postDeleteSubTopic);
+
+route.post(pathRoutes.RENAME_SUB_TOPIC, getTopicAndSubTopicID, postRenameSubTopic);
 
 export default route;

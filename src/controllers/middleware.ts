@@ -18,7 +18,6 @@ import { errorLineSeparator } from "./constantes";
 //   }
 // };
 
-//middleware
 export const decodeToken = async (req: any, res: Response, next: NextFunction) => {
   let { token } = req.query;
 
@@ -67,7 +66,7 @@ export const getTopicAndSubTopicID = async (req: any, res: Response, next: NextF
     req.subTopicID = subTopicM?._id;
     next();
   } catch (error) {
-    console.log(errorLineSeparator, "gettopicID :", error);
+    console.log(errorLineSeparator, "getTopicAndSubTopicID :", error);
     res.send(null);
   }
 };

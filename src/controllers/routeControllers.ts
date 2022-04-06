@@ -234,3 +234,40 @@ export const postRenameTopic = async (req: any, res: Response) => {
     res.send("error");
   }
 };
+
+export const postDeleteSubTopic = async (req: any, res: Response) => {
+  const { userID } = req.user;
+  const { topic, subTopic } = req.body;
+  try {
+    await cardsModel.deleteMany({ userID, subTopicID: req.subTopicID, topicID: req.topicID });
+    await subTopicsModel.findByIdAndDelete({
+      userID,
+      topicID: req.topicID,
+      _id: req.subTopicID,
+    });
+    res.send("ok");
+  } catch (error) {
+    console.log(errorLineSeparator, "postDeleteSubTopic", error);
+    res.send("error");
+  }
+};
+
+export const postRenameSubTopic = async (req: any, res: Response) => {
+  const { userID } = req.user;
+  const { topic, subTopic, newSubTopic } = req.body;
+  try {
+    await cardsModel.findOneAndUpdate(
+      { userID, topicID: req.topicID, subTopicID: req.subTopicID },
+      { subTopic: newSubTopic }
+    );
+
+    await subTopicsModel.findByIdAndUpdate(
+      { userID, topicID: req.topicID, _id: req.subTopicID },
+      { name: newSubTopic }
+    );
+    res.send("ok");
+  } catch (error) {
+    console.log(errorLineSeparator, "postRenameSubTopic", error);
+    res.send("error");
+  }
+};
