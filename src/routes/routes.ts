@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { pathRoutes } from "../controllers/constantes";
-import { decodeToken } from "../controllers/middleware";
+import { decodeToken, getTopicAndSubTopicID, getTopicID } from "../controllers/middleware";
 import {
   addCard,
   getCard,
@@ -10,7 +10,9 @@ import {
   postDeleteCard,
   postDeleteCards,
   postDeleteSubTopics,
+  postDeleteTopic,
   postDeleteTopics,
+  postRenameTopic,
   postSubTopic,
   postTopic,
   postUpdateCard,
@@ -18,21 +20,22 @@ import {
 
 const route = Router();
 
+//gives access to req.user
 route.use(decodeToken);
 
 route.get(pathRoutes.GET_TOPIC, getTopic);
 
 route.post(pathRoutes.POST_TOPIC, postTopic);
 
-route.post(pathRoutes.POST_SUB_TOPIC, postSubTopic);
+route.post(pathRoutes.POST_SUB_TOPIC, getTopicID, postSubTopic);
 
-route.get(pathRoutes.GET_SUB_TOPIC, getSubTopic);
+route.get(pathRoutes.GET_SUB_TOPIC, getTopicID, getSubTopic);
 
-route.get(pathRoutes.GET_CARDS, getCards);
+route.get(pathRoutes.GET_CARDS, getTopicAndSubTopicID, getCards);
 
-route.post(pathRoutes.ADD_CARDS, addCard);
+route.post(pathRoutes.ADD_CARDS, getTopicAndSubTopicID, addCard);
 
-route.get(pathRoutes.GET_CARD, getCard);
+route.get(pathRoutes.GET_CARD, getTopicAndSubTopicID, getCard);
 
 route.post(pathRoutes.UPDATE_CARD, postUpdateCard);
 
@@ -40,8 +43,12 @@ route.post(pathRoutes.DELETE_CARD, postDeleteCard);
 
 route.post(pathRoutes.DELETE_TOPICS, postDeleteTopics);
 
-route.post(pathRoutes.DELETE_SUB_TOPICS, postDeleteSubTopics);
+route.post(pathRoutes.DELETE_SUB_TOPICS, getTopicID, postDeleteSubTopics);
 
-route.post(pathRoutes.DELETE_CARDS, postDeleteCards);
+route.post(pathRoutes.DELETE_CARDS, getTopicAndSubTopicID, postDeleteCards);
+
+route.post(pathRoutes.DELETE_TOPIC, getTopicID, postDeleteTopic);
+
+route.post(pathRoutes.RENAME_TOPIC, getTopicID, postRenameTopic);
 
 export default route;

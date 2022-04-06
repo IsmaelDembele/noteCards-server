@@ -22,4 +22,6 @@ export const pathRoutes = {
   DELETE_TOPICS: "/deleteTopics",
   DELETE_SUB_TOPICS: "/deleteSubTopics",
   DELETE_CARDS: "/deleteCards",
+  DELETE_TOPIC: "/deleteTopic",
+  RENAME_TOPIC: "/renameTopic",
 };

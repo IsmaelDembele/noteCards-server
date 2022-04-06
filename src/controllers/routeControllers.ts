@@ -1,6 +1,6 @@
 import { Response } from "express";
-import { cardsModel } from "../db/schemas/cards";
-import { subTopicsModel } from "../db/schemas/subTopics";
+import { cardsModel } from "../db/schemas/cardsSchema";
+import { subTopicsModel } from "../db/schemas/subTopicsSchema";
 import { topicsModel } from "../db/schemas/topicsSchema";
 import { errorLineSeparator } from "./constantes";
 
@@ -13,12 +13,15 @@ export const getTopic = async (req: any, res: Response) => {
     res.send(error);
   }
 };
-
 export const postTopic = async (req: any, res: Response) => {
   const { topic } = req.body;
 
   try {
-    await topicsModel.insertMany([{ name: topic, userID: req.user.userID }]);
+    const exist = await topicsModel.find({ userID: req.user.userID, name: topic });
+    if (exist && exist.length > 0) {
+      throw new Error("The topic already exits");
+    }
+    await topicsModel.insertMany([{ userID: req.user.userID, name: topic }]);
     res.send("ok");
   } catch (error) {
     console.log(errorLineSeparator, "postTopic :", error);
@@ -29,14 +32,9 @@ export const postTopic = async (req: any, res: Response) => {
 export const postSubTopic = async (req: any, res: Response) => {
   const { subtopic, topic } = req.body;
   try {
-    const topicdata = await topicsModel.findOne({ name: topic, userID: req.user.userID });
-    if (topicdata?.name) {
-      await subTopicsModel.insertMany([
-        { name: subtopic, topic: topicdata.name, userID: req.user.userID },
-      ]);
-    } else {
-      res.send("error");
-    }
+    const subT = await subTopicsModel.insertMany([
+      { name: subtopic, topic: topic, topicID: req.topicID, userID: req.user.userID },
+    ]);
     res.send("ok");
   } catch (error) {
     console.log(errorLineSeparator, "subtopic", error);
@@ -46,47 +44,52 @@ export const postSubTopic = async (req: any, res: Response) => {
 };
 
 export const getSubTopic = async (req: any, res: Response) => {
-  const { topic: topicName } = req.query;
+  const { topic } = req.query;
+  const { userID } = req.user;
 
   try {
-    const topic = await topicsModel.findOne({ name: topicName, userID: req.user.userID });
-    if (topic) {
-      const subtopic = await subTopicsModel.find({
-        topicID: topic?._id,
-        userID: req.user.userID,
-      });
-      res.send(subtopic);
-    }
+    const subtopics = await subTopicsModel.find({ topic, topicID: req.topicID, userID });
+    res.send(subtopics);
   } catch (error) {
     console.log(errorLineSeparator, "getSubTopic", error);
-
     res.send("error");
   }
 };
 
 export const getCards = async (req: any, res: Response) => {
   const { topic, subTopic } = req.query;
-
   try {
     const cards = await cardsModel.find({
       topic: topic,
       subTopic: subTopic,
+      topicID: req.topicID,
+      subTopicID: req.subTopicID,
       userID: req.user.userID,
     });
     res.send(cards);
   } catch (error) {
     console.log(errorLineSeparator, "getCards", error);
-
     res.send("error");
   }
 };
 
 export const addCard = async (req: any, res: Response) => {
   const { topic, subTopic, front, back, note } = req.body;
-
+  const { userID } = req.user;
   try {
     cardsModel.insertMany(
-      [{ front, back, note, topic: topic, subTopic: subTopic, userID: req.user.userID }],
+      [
+        {
+          front,
+          back,
+          note,
+          topic,
+          subTopic,
+          topicID: req.topicID,
+          subTopicID: req.subTopicID,
+          userID,
+        },
+      ],
       {},
       (error, doc) => {
         if (error) {
@@ -107,7 +110,13 @@ export const getCard = async (req: any, res: Response) => {
   const { topic, subTopic } = req.query;
   const { userID } = req.user;
   try {
-    const card = await cardsModel.find({ topic, subTopic, userID });
+    const card = await cardsModel.find({
+      topic,
+      subTopic,
+      topicID: req.topicID,
+      subTopicID: req.subTopicID,
+      userID,
+    });
     res.send(card);
   } catch (error) {
     console.log(errorLineSeparator, "getCard", error);
@@ -118,9 +127,11 @@ export const getCard = async (req: any, res: Response) => {
 export const postUpdateCard = async (req: any, res: Response) => {
   const { topic, subTopic, front, back, note, cardID } = req.body;
   const { userID } = req.user;
-
   try {
-    const result = await cardsModel.findByIdAndUpdate({ _id: cardID }, { front, back, note });
+    const result = await cardsModel.findByIdAndUpdate(
+      { _id: cardID, userID },
+      { front, back, note }
+    );
     res.send("ok");
   } catch (error) {
     console.log(errorLineSeparator, "postUpdateCard", error);
@@ -157,28 +168,69 @@ export const postDeleteTopics = async (req: any, res: Response) => {
 
 export const postDeleteSubTopics = async (req: any, res: Response) => {
   const { userID } = req.user;
-  const { topic } = req.body;
-
-  console.log(userID);
-  console.log(req.body);
 
   try {
-    const cards = await cardsModel.deleteMany({ userID, topic });
-    const subtopic = await subTopicsModel.deleteMany({ userID, topic });
+    const cards = await cardsModel.deleteMany({
+      userID,
+      topicID: req.topicID,
+    });
+    const subtopic = await subTopicsModel.deleteMany({ userID, topicID: req.topicID });
     res.send("ok");
   } catch (error) {
     console.log(errorLineSeparator, "postDeleteSubTopics", error);
     res.send("error");
   }
 };
+
 export const postDeleteCards = async (req: any, res: Response) => {
   const { userID } = req.user;
   const { topic, subTopic } = req.body;
   try {
-    const cards = await cardsModel.deleteMany({ userID, topic, subTopic });
+    const cards = await cardsModel.deleteMany({
+      userID,
+      topic,
+      subTopic,
+      topicID: req.topicID,
+      subTopicID: req.subTopicID,
+    });
     res.send("ok");
   } catch (error) {
     console.log(errorLineSeparator, "postDeleteCards", error);
+    res.send("error");
+  }
+};
+
+export const postDeleteTopic = async (req: any, res: Response) => {
+  const { userID } = req.user;
+  const { topic } = req.body;
+
+  console.log("userID", userID);
+  console.log("req.topicID ", req.topicID);
+
+  try {
+    await cardsModel.deleteMany({ userID, topicID: req.topicID });
+    await subTopicsModel.deleteMany({ userID, topicID: req.topicID, topic });
+    await topicsModel.findOneAndDelete({ userID, name: topic });
+    res.send("ok");
+  } catch (error) {
+    console.log(errorLineSeparator, "postDeleteTopic", error);
+    res.send("error");
+  }
+};
+
+export const postRenameTopic = async (req: any, res: Response) => {
+  const { userID } = req.user;
+  const { topic, newTopic } = req.body;
+
+  console.log(userID, topic, newTopic);
+
+  try {
+    await cardsModel.updateMany({ userID, topicID: req.topicID, topic }, { topic: newTopic });
+    await subTopicsModel.updateMany({ userID, topic, topicID: req.topicID }, { topic: newTopic });
+    await topicsModel.findOneAndUpdate({ userID, name: topic }, { name: newTopic });
+    res.send("ok");
+  } catch (error) {
+    console.log(errorLineSeparator, "postRenameTopic", error);
     res.send("error");
   }
 };

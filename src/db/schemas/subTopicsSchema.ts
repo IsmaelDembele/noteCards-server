@@ -5,14 +5,14 @@ export interface ISubTopics {
   _id?: string;
   name: string;
   topic: string;
-  // topicID: Types.ObjectId;
+  topicID: Types.ObjectId;
   userID: Types.ObjectId;
 }
 
 const subTopicsSchema = new Schema<ISubTopics>({
-  name: { type: String, required: true, unique: true },
+  name: { type: String, required: true },
   topic: { type: String, required: true },
-  // topicID: { type: Schema.Types.ObjectId, ref: "Topic" },
+  topicID: { type: Schema.Types.ObjectId, ref: "Topic", required: true },
   userID: { type: Schema.Types.ObjectId, ref: "User", required: true },
 });
 
