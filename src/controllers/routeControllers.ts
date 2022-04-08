@@ -271,3 +271,14 @@ export const postRenameSubTopic = async (req: any, res: Response) => {
     res.send("error");
   }
 };
+
+export const getAllCards = async (req: any, res: Response) => {
+  const { userID } = req.user;
+  try {
+    const result = await cardsModel.find({ userID });
+    res.send(result);
+  } catch (error) {
+    console.log(errorLineSeparator, "getAllCards", error);
+    res.send("error");
+  }
+};

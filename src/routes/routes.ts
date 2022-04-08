@@ -3,6 +3,7 @@ import { pathRoutes } from "../controllers/constantes";
 import { decodeToken, getTopicAndSubTopicID, getTopicID } from "../controllers/middleware";
 import {
   addCard,
+  getAllCards,
   getCard,
   getCards,
   getSubTopic,
@@ -56,5 +57,7 @@ route.post(pathRoutes.RENAME_TOPIC, getTopicID, postRenameTopic);
 route.post(pathRoutes.DELETE_SUB_TOPIC, getTopicAndSubTopicID, postDeleteSubTopic);
 
 route.post(pathRoutes.RENAME_SUB_TOPIC, getTopicAndSubTopicID, postRenameSubTopic);
+
+route.post(pathRoutes.GET_ALL_CARDS, getAllCards);
 
 export default route;
