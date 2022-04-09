@@ -4,6 +4,7 @@ import { decodeToken, getTopicAndSubTopicID, getTopicID } from "../controllers/m
 import {
   addCard,
   getAllCards,
+  getAllCardsOfTopic,
   getCard,
   getCards,
   getSubTopic,
@@ -59,5 +60,7 @@ route.post(pathRoutes.DELETE_SUB_TOPIC, getTopicAndSubTopicID, postDeleteSubTopi
 route.post(pathRoutes.RENAME_SUB_TOPIC, getTopicAndSubTopicID, postRenameSubTopic);
 
 route.post(pathRoutes.GET_ALL_CARDS, getAllCards);
+
+route.get(pathRoutes.GEL_ALL_CARDS_OF_TOPIC, getAllCardsOfTopic);
 
 export default route;

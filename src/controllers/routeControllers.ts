@@ -282,3 +282,15 @@ export const getAllCards = async (req: any, res: Response) => {
     res.send("error");
   }
 };
+
+export const getAllCardsOfTopic = async (req: any, res: Response) => {
+  const { userID } = req.user;
+  const { topic } = req.query;
+  try {
+    const result = await cardsModel.find({ userID, topic });
+    res.send(result);
+  } catch (error) {
+    console.log(errorLineSeparator, "getAllCardsOfTopic", error);
+    res.send("error");
+  }
+};
