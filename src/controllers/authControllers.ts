@@ -1,4 +1,4 @@
-import {  Request, Response } from "express";
+import { Request, Response } from "express";
 import "dotenv/config";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -16,8 +16,9 @@ export const getIsLogged = (req: any, res: Response) => {
   try {
     res.send({ email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname }); //send true
   } catch (error) {
-    console.log("my error", error);
-    res.send(null);
+    console.log(errorLineSeparator, "getIsLogged", error);
+
+    res.status(500).send(null);
   }
 };
 
@@ -29,11 +30,12 @@ export const postSignIn = async (req: Request, res: Response) => {
   try {
     const user = await UserModel.findOne<IUser>({ email: email }).exec();
     const hash = user?.password as string;
-    const verify = await bcrypt.compare(password, hash);
+    let verify = false;
+    if (password && hash) verify = await bcrypt.compare(password, hash);
     if (!verify) {
-      let msg = "error password";
+      let msg = "Error email/password";
       console.log(msg);
-      res.send(msg);
+      res.status(403).send(msg);
     } else {
       const token = jwt.sign(
         {
@@ -56,7 +58,7 @@ export const postSignIn = async (req: Request, res: Response) => {
     }
   } catch (error) {
     console.log(errorLineSeparator, "postSignin :", error);
-    res.send("error");
+    res.status(500).send("internal error");
   }
 };
 

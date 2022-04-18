@@ -28,4 +28,5 @@ export const pathRoutes = {
   RENAME_SUB_TOPIC: "/renameSubTopic",
   GET_ALL_CARDS: "/getAllCards",
   GEL_ALL_CARDS_OF_TOPIC: "/getAllCardsOfTopic",
+  DELETE_ACCOUNT: "/deleteAccount",
 };

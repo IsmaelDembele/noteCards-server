@@ -4,6 +4,7 @@ import { subTopicsModel } from "../db/schemas/subTopicsSchema";
 import { topicsModel } from "../db/schemas/topicsSchema";
 import { UserModel } from "../db/schemas/userSchema";
 import { errorLineSeparator } from "./constantes";
+import bcrypt from "bcrypt";
 
 // const userExist = async (id: string): Promise<boolean> => {
 //   try {
@@ -30,7 +31,6 @@ export const decodeToken = async (req: any, res: Response, next: NextFunction) =
     next();
   } catch (error) {
     console.log(errorLineSeparator, "decodeToken :", error);
-
     res.send(null);
   }
 };
@@ -68,5 +68,25 @@ export const getTopicAndSubTopicID = async (req: any, res: Response, next: NextF
   } catch (error) {
     console.log(errorLineSeparator, "getTopicAndSubTopicID :", error);
     res.send(null);
+  }
+};
+
+export const verifyPassword = async (req: any, res: Response, next: NextFunction) => {
+  let { password } = req.body;
+  const { userID } = req.user;
+
+  if (!password) password = req.query.password;
+
+  try {
+    const user = await UserModel.findOne({ id: userID });
+    req.verify = await bcrypt.compare(password, user?.password as string);
+    if (req.verify) {
+      next();
+    } else {
+      console.log("wrong password");
+      res.send("wrong password");
+    }
+  } catch (error) {
+    console.log(errorLineSeparator, "verifyPassword :", error);
   }
 };

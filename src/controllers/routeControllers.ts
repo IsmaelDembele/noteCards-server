@@ -2,6 +2,7 @@ import { Response } from "express";
 import { cardsModel } from "../db/schemas/cardsSchema";
 import { subTopicsModel } from "../db/schemas/subTopicsSchema";
 import { topicsModel } from "../db/schemas/topicsSchema";
+import { UserModel } from "../db/schemas/userSchema";
 import { errorLineSeparator } from "./constantes";
 
 export const getTopic = async (req: any, res: Response) => {
@@ -291,6 +292,21 @@ export const getAllCardsOfTopic = async (req: any, res: Response) => {
     res.send(result);
   } catch (error) {
     console.log(errorLineSeparator, "getAllCardsOfTopic", error);
+    res.send("error");
+  }
+};
+
+export const deleteAccount = async (req: any, res: Response) => {
+  const { userID } = req.user;
+
+  try {
+    await cardsModel.deleteMany({ userID });
+    await subTopicsModel.deleteMany({ userID });
+    await topicsModel.deleteMany({ userID });
+    await UserModel.findByIdAndDelete({ _id: userID });
+    res.send("ok");
+  } catch (error) {
+    console.log(errorLineSeparator, "deleteAccount", error);
     res.send("error");
   }
 };
