@@ -1,9 +1,12 @@
 export const errorLineSeparator = "####################################\n";
 
+export const saltOrRounds = 12;
+
 export const pathAuthRoutes = {
   IS_LOGGED: "/islogged",
   SIGN_IN: "/signin",
   CREATE_ACCOUNT: "/createAccount",
+  CHANGE_PASSWORD: "/changePassword",
 };
 
 export const pathRoutes = {

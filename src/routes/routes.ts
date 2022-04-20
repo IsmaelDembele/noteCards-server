@@ -1,6 +1,11 @@
 import { Router } from "express";
 import { pathRoutes } from "../controllers/constantes";
-import { decodeToken, getTopicAndSubTopicID, getTopicID, verifyPassword } from "../controllers/middleware";
+import {
+  decodeToken,
+  getTopicAndSubTopicID,
+  getTopicID,
+  verifyPassword,
+} from "../controllers/middleware";
 import {
   addCard,
   deleteAccount,
@@ -65,5 +70,6 @@ route.post(pathRoutes.GET_ALL_CARDS, getAllCards);
 route.get(pathRoutes.GEL_ALL_CARDS_OF_TOPIC, getAllCardsOfTopic);
 
 route.post(pathRoutes.DELETE_ACCOUNT, verifyPassword, deleteAccount);
+
 
 export default route;

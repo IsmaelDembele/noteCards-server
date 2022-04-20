@@ -310,3 +310,5 @@ export const deleteAccount = async (req: any, res: Response) => {
     res.send("error");
   }
 };
+
+

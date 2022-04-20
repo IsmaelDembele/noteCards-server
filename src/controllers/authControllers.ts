@@ -3,7 +3,7 @@ import "dotenv/config";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { UserModel, IUser } from "../db/schemas/userSchema";
-import { errorLineSeparator } from "./constantes";
+import { errorLineSeparator, saltOrRounds } from "./constantes";
 
 export interface IToken {
   userID: string;
@@ -70,7 +70,7 @@ export const postCreateAccount = async (req: Request, res: Response) => {
   let hash: string;
 
   try {
-    hash = await bcrypt.hash(password, 12);
+    hash = await bcrypt.hash(password, saltOrRounds);
     UserModel.insertMany([{ firstname, lastname, email, password: hash }], {}, (err, data) => {
       if (err) {
         console.log("error insert user in the db  error ", err);
@@ -82,6 +82,20 @@ export const postCreateAccount = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.log(errorLineSeparator, "postCreateAccount :", error);
+    res.send("error");
+  }
+};
+
+export const changePassword = async (req: any, res: Response) => {
+  const { userID } = req.user;
+  const { newPassword } = req.body;
+
+  try {
+    const hash = await bcrypt.hash(newPassword, saltOrRounds);
+    await UserModel.findByIdAndUpdate({ _id: userID }, { password: hash });
+    res.send("ok");
+  } catch (error) {
+    console.log(errorLineSeparator, "changePassword", error);
     res.send("error");
   }
 };
