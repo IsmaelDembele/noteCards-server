@@ -1,6 +1,7 @@
 export const errorLineSeparator = "####################################\n";
 
 export const saltOrRounds = 12;
+export const nbdays = 15;
 
 export const pathAuthRoutes = {
   IS_LOGGED: "/islogged",

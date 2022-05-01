@@ -24,6 +24,10 @@ const main = async () => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
 
+  app.get("/", (req: Request, res: Response) => {
+    res.send("Server working...");
+  });
+
   app.use(authRoute);
   app.use(route);
 

@@ -3,7 +3,7 @@ import "dotenv/config";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { UserModel, IUser } from "../db/schemas/userSchema";
-import { errorLineSeparator, saltOrRounds } from "./constantes";
+import { errorLineSeparator, nbdays, saltOrRounds } from "./constantes";
 
 export interface IToken {
   userID: string;
@@ -45,7 +45,7 @@ export const postSignIn = async (req: Request, res: Response) => {
           lastname: user?.lastname,
         },
         process.env.JWT_SECRET as string,
-        { expiresIn: 60 * 60 * 24 } //1d
+        { expiresIn: 60 * 60 * 24 * nbdays }
       );
 
       res.send({
