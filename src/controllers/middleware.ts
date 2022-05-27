@@ -6,19 +6,6 @@ import { UserModel } from "../db/schemas/userSchema";
 import { errorLineSeparator } from "./constantes";
 import bcrypt from "bcrypt";
 
-// const userExist = async (id: string): Promise<boolean> => {
-//   try {
-//     const user = await UserModel.findOne({ _id: id });
-//     if (user) {
-//       return true;
-//     }
-
-//     return false;
-//   } catch (error) {
-//     return false;
-//   }
-// };
-
 export const decodeToken = async (req: any, res: Response, next: NextFunction) => {
   let { token } = req.query;
 
