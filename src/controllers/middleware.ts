@@ -22,6 +22,7 @@ export const decodeToken = async (req: any, res: Response, next: NextFunction) =
   }
 };
 
+
 export const getTopicID = async (req: any, res: Response, next: NextFunction) => {
   let { topic } = req.query;
   const { userID } = req.user;
