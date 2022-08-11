@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { UserModel, IUser } from "../db/schemas/userSchema";
 import { errorLineSeparator, nbdays, saltOrRounds } from "./constantes";
+import { app } from "..";
 
 export interface IToken {
   userID: string;
@@ -17,7 +18,6 @@ export const getIsLogged = (req: any, res: Response) => {
     res.send({ email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname }); //send true
   } catch (error) {
     console.log(errorLineSeparator, "getIsLogged", error);
-
     res.status(500).send(null);
   }
 };
@@ -47,6 +47,18 @@ export const postSignIn = async (req: Request, res: Response) => {
         process.env.JWT_SECRET as string,
         { expiresIn: 60 * 60 * 24 * nbdays }
       );
+
+      // res.cookie("token", token, {
+      //   maxAge: 1000 * 60 * 60 * 24, //1d
+      //   httpOnly: true,
+      //   secure: app.get("env") !== "development",
+      // });
+      res.cookie("token", token, {
+        maxAge: 1000 * 60 * 60 * 24, //1d
+        httpOnly: true,
+        secure: app.get("env") !== "development",
+        sameSite: "lax",
+      });
 
       res.send({
         token: token,
@@ -86,7 +98,7 @@ export const postCreateAccount = async (req: Request, res: Response) => {
   }
 };
 
-export const changePassword = async (req: any, res: Response) => {
+export const changePassword = async (req: Request, res: Response) => {
   const { userID } = req.user;
   const { newPassword } = req.body;
 
@@ -98,4 +110,10 @@ export const changePassword = async (req: any, res: Response) => {
     console.log(errorLineSeparator, "changePassword", error);
     res.send("error");
   }
+};
+
+export const signOut = async (req: Request, res: Response) => {
+  res.clearCookie("token");
+
+  res.send("ok");
 };

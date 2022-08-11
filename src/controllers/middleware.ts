@@ -1,4 +1,4 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Response, Request } from "express";
 import jwt from "jsonwebtoken";
 import { subTopicsModel } from "../db/schemas/subTopicsSchema";
 import { topicsModel } from "../db/schemas/topicsSchema";
@@ -6,24 +6,23 @@ import { UserModel } from "../db/schemas/userSchema";
 import { errorLineSeparator } from "./constantes";
 import bcrypt from "bcrypt";
 
-export const decodeToken = async (req: any, res: Response, next: NextFunction) => {
-  let { token } = req.query;
-
-  if (!token) token = req.body.token;
-
+export const decodeToken = async (req: Request, res: Response, next: NextFunction) => {
+  const { token } = req.cookies;
   try {
-    const decoded = <jwt.JwtPayload>jwt.verify(token as string, process.env.JWT_SECRET as string);
-    req.user = decoded;
-
-    next();
+    if (token) {
+      req.user = <jwt.JwtPayload>jwt.verify(token as string, process.env.JWT_SECRET as string);
+      next();
+    } else {
+      console.error(errorLineSeparator, "no valid token");
+      res.send(null)
+    }
   } catch (error) {
-    console.log(errorLineSeparator, "decodeToken :", error);
+    console.error(errorLineSeparator, "decodeToken :", error);
     res.send(null);
   }
 };
 
-
-export const getTopicID = async (req: any, res: Response, next: NextFunction) => {
+export const getTopicID = async (req: Request, res: Response, next: NextFunction) => {
   let { topic } = req.query;
   const { userID } = req.user;
 
@@ -40,7 +39,7 @@ export const getTopicID = async (req: any, res: Response, next: NextFunction) =>
   }
 };
 
-export const getTopicAndSubTopicID = async (req: any, res: Response, next: NextFunction) => {
+export const getTopicAndSubTopicID = async (req: Request, res: Response, next: NextFunction) => {
   let { topic, subTopic } = req.query;
   const { userID } = req.user;
 
@@ -59,7 +58,7 @@ export const getTopicAndSubTopicID = async (req: any, res: Response, next: NextF
   }
 };
 
-export const verifyPassword = async (req: any, res: Response, next: NextFunction) => {
+export const verifyPassword = async (req: Request, res: Response, next: NextFunction) => {
   let { password } = req.body;
   const { userID } = req.user;
 

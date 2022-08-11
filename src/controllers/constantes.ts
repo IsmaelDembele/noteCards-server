@@ -8,6 +8,7 @@ export const pathAuthRoutes = {
   SIGN_IN: "/signin",
   CREATE_ACCOUNT: "/createAccount",
   CHANGE_PASSWORD: "/changePassword",
+  SIGN_OUT: "/signout",
 };
 
 export const pathRoutes = {
