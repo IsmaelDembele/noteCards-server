@@ -113,10 +113,10 @@ export const changePassword = async (req: Request, res: Response) => {
 };
 
 export const signOut = async (req: Request, res: Response) => {
-  //some browser do not clear the cookie for some reason
+  //some browsers do not clear the cookie for some reason
   //we will set a wrong token for those one in order to signout
   res.cookie("token", "token", {
-    maxAge: 1000 * 60 * 60 * 24, //1d
+    maxAge: 60 * 24,
     httpOnly: true,
     secure: app.get("env") !== "development",
     sameSite: app.get("env") !== "development" ? "none" : "lax",
