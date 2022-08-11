@@ -57,7 +57,7 @@ export const postSignIn = async (req: Request, res: Response) => {
         maxAge: 1000 * 60 * 60 * 24, //1d
         httpOnly: true,
         secure: app.get("env") !== "development",
-        sameSite: "lax",
+        sameSite: app.get("env") !== "development" ? "none" : "lax",
       });
 
       res.send({
