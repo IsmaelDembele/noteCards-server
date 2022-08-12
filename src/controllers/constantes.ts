@@ -3,6 +3,12 @@ export const errorLineSeparator = "####################################\n";
 export const saltOrRounds = 12;
 export const nbdays = 15;
 
+export const validation = {
+  PASSWORD_LENGTH: 5,
+  MIN_LENGTH_FIRSTNAME: 2,
+  MIN_LENGTH_LASTNAME: 2,
+}
+
 export const pathAuthRoutes = {
   IS_LOGGED: "/islogged",
   SIGN_IN: "/signin",
