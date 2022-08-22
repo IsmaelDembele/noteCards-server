@@ -291,17 +291,4 @@ export const getAllCardsOfTopic = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteAccount = async (req: Request, res: Response) => {
-  const { userID } = req.user;
 
-  try {
-    await cardsModel.deleteMany({ userID });
-    await subTopicsModel.deleteMany({ userID });
-    await topicsModel.deleteMany({ userID });
-    await UserModel.findByIdAndDelete({ _id: userID });
-    res.send("ok");
-  } catch (error) {
-    console.error(errorLineSeparator, "deleteAccount", error);
-    res.send("error");
-  }
-};

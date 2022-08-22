@@ -2,6 +2,7 @@ import { Router } from "express";
 import { body } from "express-validator";
 import {
   changePassword,
+  deleteAccount,
   getIsLogged,
   postCreateAccount,
   postSignIn,
@@ -34,5 +35,8 @@ authRoute.post(
 authRoute.post(pathAuthRoutes.CHANGE_PASSWORD, decodeToken, verifyPassword, changePassword);
 
 authRoute.post(pathAuthRoutes.SIGN_OUT, decodeToken, signOut);
+
+authRoute.post(pathAuthRoutes.DELETE_ACCOUNT, decodeToken, verifyPassword, deleteAccount);
+
 
 export default authRoute;

@@ -5,8 +5,12 @@ import bcrypt from "bcrypt";
 import { validationResult } from "express-validator";
 
 import { UserModel, IUser } from "../db/schemas/userSchema";
-import { errorLineSeparator, nbdays, saltOrRounds } from "./constantes";
-import { app } from "..";
+import { errorLineSeparator, nbdays, pathAuthRoutes, saltOrRounds } from "./constantes";
+import { app, isProdMod } from "..";
+import { cardsModel } from "../db/schemas/cardsSchema";
+import { subTopicsModel } from "../db/schemas/subTopicsSchema";
+import { topicsModel } from "../db/schemas/topicsSchema";
+import { signingOut } from "../helpers/signoutHelper";
 
 export interface IToken {
   userID: string;
@@ -26,7 +30,7 @@ export const getIsLogged = (req: any, res: Response) => {
 
 export const postSignIn = async (req: Request, res: Response) => {
   const { email, password } = req.body;
-  const isProdMod = app.get("env") !== "development";
+  // const isProdMod = app.get("env") !== "development";
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -94,7 +98,7 @@ export const postCreateAccount = async (req: Request, res: Response) => {
     UserModel.insertMany([{ firstname, lastname, email, password: hash }], {}, (err, data) => {
       if (err) {
         console.log("error insert user in the db  error ", err);
-        res.send("error");
+        res.status(500).send("email");
       } else {
         console.log("new  account created");
         res.send("ok");
@@ -121,17 +125,21 @@ export const changePassword = async (req: Request, res: Response) => {
 };
 
 export const signOut = (req: Request, res: Response) => {
-  const isProdMod = app.get("env") !== "development";
-  //some browsers do not clear the cookie for some reason
-  //we will set a wrong token for those one in order to signout
-  res.cookie("token", "token", {
-    maxAge: 60 * 24,
-    httpOnly: true,
-    secure: isProdMod,
-    sameSite: isProdMod ? "none" : "lax",
-  });
+  signingOut(res);
+};
 
-  res.clearCookie("token");
+export const deleteAccount = async (req: Request, res: Response) => {
+  const { userID } = req.user;
 
-  res.send("ok");
+  try {
+    await cardsModel.deleteMany({ userID });
+    await subTopicsModel.deleteMany({ userID });
+    await topicsModel.deleteMany({ userID });
+    await UserModel.findByIdAndDelete({ _id: userID });
+
+    signingOut(res);
+  } catch (error) {
+    console.error(errorLineSeparator, "deleteAccount", error);
+    res.send("error");
+  }
 };

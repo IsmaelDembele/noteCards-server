@@ -15,6 +15,7 @@ export const pathAuthRoutes = {
   CREATE_ACCOUNT: "/createAccount",
   CHANGE_PASSWORD: "/changePassword",
   SIGN_OUT: "/signout",
+  DELETE_ACCOUNT: "/deleteAccount",
 };
 
 export const pathRoutes = {
@@ -39,5 +40,4 @@ export const pathRoutes = {
   RENAME_SUB_TOPIC: "/renameSubTopic",
   GET_ALL_CARDS: "/getAllCards",
   GEL_ALL_CARDS_OF_TOPIC: "/getAllCardsOfTopic",
-  DELETE_ACCOUNT: "/deleteAccount",
 };

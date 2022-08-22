@@ -8,6 +8,8 @@ import cookieParser from "cookie-parser";
 import "dotenv/config";
 export const app = express();
 
+export const isProdMod = app.get("env") !== "development";
+
 const main = async () => {
   // await mongoose.connect("mongodb://localhost:27017/notecard");
   await mongoose.connect(process.env.MONGO_URI as string);

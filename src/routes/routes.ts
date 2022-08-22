@@ -8,7 +8,6 @@ import {
 } from "../controllers/middleware";
 import {
   addCard,
-  deleteAccount,
   getAllCards,
   getAllCardsOfTopic,
   getCard,
@@ -68,8 +67,6 @@ route.post(pathRoutes.RENAME_SUB_TOPIC, getTopicAndSubTopicID, postRenameSubTopi
 route.post(pathRoutes.GET_ALL_CARDS, getAllCards);
 
 route.get(pathRoutes.GEL_ALL_CARDS_OF_TOPIC, getAllCardsOfTopic);
-
-route.post(pathRoutes.DELETE_ACCOUNT, verifyPassword, deleteAccount);
 
 
 export default route;
